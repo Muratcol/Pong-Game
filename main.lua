@@ -17,6 +17,7 @@ PADDLE_SPEED = 200
 
 function love.load()
 
+    love.window.setTitle("Murat's Pong Game")
     love.graphics.setDefaultFilter('nearest', 'nearest')
     math.randomseed((os.time()))
     smallFont = love.graphics.newFont('Daydream.ttf', 8)
@@ -39,15 +40,32 @@ function love.load()
 end
 
 function love.update(dt)
+    if gameState == 'play' then
+        ball:update(dt)
+        -- Collide effect
+        if ball:collides(paddle1) then
+            -- deflect ball to the right
+            ball.dx = -ball.dx
+        end
 
-    if ball:collides(paddle1) then
-        -- deflect ball to the right
-        ball.dx = -ball.dx
-    end
+        if ball:collides(paddle2) then
+            -- deflect ball to the left
+            ball.dx = -ball.dx
+        end
 
-    if ball:collides(paddle2) then
-        -- deflect ball to the left
-        ball.dx = -ball.dx
+        if ball.y <= 0 then
+            ball.dy = -ball.dy
+            ball.y = 0
+        end
+
+        if ball.y >= VIRTUAL_HEIGHT - 4 then
+            ball.dy = -ball.dy
+            ball.y = VIRTUAL_HEIGHT - 4
+        end
+
+        if ball.x <= 0 or ball.x >= VIRTUAL_WIDTH - 4 then
+            score()
+        end  
     end
 
     paddle1:update(dt)
@@ -68,8 +86,17 @@ function love.update(dt)
     else
         paddle2.dy = 0
     end   
-    if gameState == 'play' then
-        ball:update(dt)
+
+end
+
+function score()
+    if ball.x <= 0 then
+        player2Score = player2Score + 1
+        ball:reset()
+    end
+    if ball.x >= VIRTUAL_WIDTH -4 then
+        player1Score = player1Score + 1
+        ball:reset()
     end
 end
 
@@ -81,6 +108,8 @@ function love.keypressed(key)
             gameState = 'play'
         elseif gameState == 'play' then
             ball:reset()
+            player1Score = 0
+            player2Score = 0
             gameState = 'start'           
         end
     end
