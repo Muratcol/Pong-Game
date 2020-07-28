@@ -25,6 +25,7 @@ function love.load()
 
     player1Score = 0
     player2Score = 0
+    servingPlayer = math.random(2) == 1 and 2
 
     -- Initializing paddles
     paddle1 = Paddle(5, 20, 5, 20)
@@ -93,26 +94,34 @@ function score()
     if ball.x <= 0 then
         player2Score = player2Score + 1
         ball:reset()
+        servingPlayer = 1
+        ball.dx = 100       
     end
     if ball.x >= VIRTUAL_WIDTH -4 then
         player1Score = player1Score + 1
-        ball:reset()
+        ball:reset()    
+        servingPlayer = 2
+        ball.dx = -100  
     end
+    gameState = 'serve'
 end
 
 function love.keypressed(key)
     if key == 'escape' then
         love.event.quit()
     elseif key == 'enter' or key == 'return' then
-        if gameState == 'start' then
+        if gameState == 'start' or gameState == 'serve' then
             gameState = 'play'
-        elseif gameState == 'play' then
-            ball:reset()
-            player1Score = 0
-            player2Score = 0
-            gameState = 'start'           
         end
     end
+
+    if key == 'r' then
+        ball:reset()
+        player1Score = 0
+        player2Score = 0
+        gameState = 'start'           
+    end
+
     if key == 'space' then
         if gameState == 'start' then
             gameState = 'play'
@@ -133,11 +142,14 @@ function love.draw()
     love.graphics.setFont(smallFont)
     if gameState == 'start' then
         love.graphics.printf('Welcome to Pong!', 0, 20, VIRTUAL_WIDTH, 'center')
-        love.graphics.printf('Press Enter to Start', 0, 40, VIRTUAL_WIDTH + 20, 'center')
-    end
-    if gameState == 'play' then
+        love.graphics.printf('Press Enter to start', 0, 40, VIRTUAL_WIDTH + 20, 'center')
+    elseif gameState == 'serve' then
+        love.graphics.printf('Serving player: ' .. tostring(servingPlayer == 1 and 'Player 2' or 'Player 1'), 0, 20, VIRTUAL_WIDTH, 'center')
+        love.graphics.printf('Press Enter to serve', 0, 40, VIRTUAL_WIDTH + 20, 'center')
+    else
         love.graphics.printf('', 0, 20, VIRTUAL_WIDTH, 'center')
     end
+    
     love.graphics.setFont(scoreFont)
     love.graphics.print(player1Score, VIRTUAL_WIDTH / 2 - 50, VIRTUAL_HEIGHT / 3)
     love.graphics.print(player2Score, VIRTUAL_WIDTH / 2 + 30, VIRTUAL_HEIGHT / 3)
