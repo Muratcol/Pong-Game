@@ -1,5 +1,6 @@
--- https://github.com/Ulydev/push
+-- https://github.com/vrld/hump/blob/master/class.lua
 Class = require 'class'
+-- https://github.com/Ulydev/push
 push = require 'push'
 
 
@@ -24,8 +25,9 @@ function love.load()
     player1Score = 0
     player2Score = 0
 
-    player1Y = 30
-    player2Y = VIRTUAL_HEIGHT - 40
+    -- Initializing paddles
+    paddle1 = Paddle(5, 20, 5, 20)
+    paddle2 = Paddle(VIRTUAL_WIDTH - 10, VIRTUAL_HEIGHT - 30, 5, 20)
 
     ballX = VIRTUAL_WIDTH / 2 - 2
     ballY = VIRTUAL_HEIGHT / 2 - 2
@@ -42,17 +44,24 @@ function love.load()
 end
 
 function love.update(dt)
+
+    paddle1:update(dt)
+    paddle2:update(dt)
     if love.keyboard.isDown('w') then
         -- move paddles only verticaly
-        player1Y = math.max(1, player1Y - PADDLE_SPEED * dt)
+        paddle1.dy = -PADDLE_SPEED
 
     elseif love.keyboard.isDown('s') then
-        player1Y = math.min(VIRTUAL_HEIGHT - 21, player1Y + PADDLE_SPEED * dt)
+        paddle1.dy = PADDLE_SPEED
+    else
+        paddle1.dy = 0
     end
     if love.keyboard.isDown('up') then
-        player2Y = math.max(1, player2Y - PADDLE_SPEED * dt)
+        paddle2.dy = - PADDLE_SPEED
     elseif love.keyboard.isDown('down') then
-        player2Y = math.min(VIRTUAL_HEIGHT - 21, player2Y + PADDLE_SPEED * dt)
+        paddle2.dy = PADDLE_SPEED
+    else
+        paddle2.dy = 0
     end
     
     if gameState == 'play' then
@@ -88,11 +97,8 @@ function love.draw()
     -- render ball 
     love.graphics.rectangle('fill', ballX, ballY, 4, 4)
 
-    -- render first paddle (left side)
-    love.graphics.rectangle('fill', 10, player1Y, 5, 20)
-
-    -- render second paddle (right side)
-    love.graphics.rectangle('fill', VIRTUAL_WIDTH - 10, player2Y, 5, 20)
+    paddle1:render()
+    paddle2:render()  
 
     love.graphics.setFont(smallFont)
     if gameState == 'start' then
