@@ -28,12 +28,7 @@ function love.load()
     -- Initializing paddles
     paddle1 = Paddle(5, 20, 5, 20)
     paddle2 = Paddle(VIRTUAL_WIDTH - 10, VIRTUAL_HEIGHT - 30, 5, 20)
-
-    ballX = VIRTUAL_WIDTH / 2 - 2
-    ballY = VIRTUAL_HEIGHT / 2 - 2
-    ballDX = math.random(2) == 1 and -100 or 100
-    ballDY = math.random(-50, 50) 
-    
+    ball = Ball(VIRTUAL_WIDTH / 2 - 2, VIRTUAL_HEIGHT / 2 - 2, 5, 5)
     gameState = 'start'
 
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
@@ -62,16 +57,11 @@ function love.update(dt)
         paddle2.dy = PADDLE_SPEED
     else
         paddle2.dy = 0
-    end
-    
+    end   
     if gameState == 'play' then
-        ballX = ballX + ballDX * dt
-        ballY = ballY + ballDY * dt
+        ball:update(dt)
     end
 end
-
-
-
 
 function love.keypressed(key)
     if key == 'escape' then
@@ -80,11 +70,15 @@ function love.keypressed(key)
         if gameState == 'start' then
             gameState = 'play'
         elseif gameState == 'play' then
+            ball:reset()
+            gameState = 'start'           
+        end
+    end
+    if key == 'space' then
+        if gameState == 'start' then
+            gameState = 'play'
+        elseif gameState == 'play' then
             gameState = 'start'
-            ballX = VIRTUAL_WIDTH / 2 - 2
-            ballY = VIRTUAL_HEIGHT / 2 - 2
-            ballDX = math.random(2) == 1 and -100 or 100
-            ballDY = math.random(-50, 50) 
         end
     end
 end
@@ -93,10 +87,7 @@ function love.draw()
     push:apply('start')
 
     love.graphics.clear(40 / 255, 45 / 255, 52 / 255, 255 / 255)
-
-    -- render ball 
-    love.graphics.rectangle('fill', ballX, ballY, 4, 4)
-
+    ball:render()
     paddle1:render()
     paddle2:render()  
 
