@@ -1,5 +1,10 @@
+-- https://github.com/Ulydev/push
+Class = require 'class'
 push = require 'push'
 
+
+require 'Ball'
+require 'Paddle'
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
@@ -10,8 +15,9 @@ VIRTUAL_HEIGHT = 243
 PADDLE_SPEED = 200
 
 function love.load()
-    -- math.randomSEED((os.time()))
+
     love.graphics.setDefaultFilter('nearest', 'nearest')
+    math.randomseed((os.time()))
     smallFont = love.graphics.newFont('Daydream.ttf', 8)
     scoreFont = love.graphics.newFont('Daydream.ttf', 25)
 
