@@ -40,6 +40,16 @@ end
 
 function love.update(dt)
 
+    if ball:collides(paddle1) then
+        -- deflect ball to the right
+        ball.dx = -ball.dx
+    end
+
+    if ball:collides(paddle2) then
+        -- deflect ball to the left
+        ball.dx = -ball.dx
+    end
+
     paddle1:update(dt)
     paddle2:update(dt)
     if love.keyboard.isDown('w') then
@@ -103,4 +113,14 @@ function love.draw()
     love.graphics.print(player1Score, VIRTUAL_WIDTH / 2 - 50, VIRTUAL_HEIGHT / 3)
     love.graphics.print(player2Score, VIRTUAL_WIDTH / 2 + 30, VIRTUAL_HEIGHT / 3)
     push:apply('end')
+
+    -- Displaying FPS
+    displayFPS()
+    end
+
+    function displayFPS()
+        love.graphics.setColor(0, 1, 0, 1)
+        love.graphics.setFont(smallFont)
+        love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 40, 20)
+        love.graphics.setColor(1, 1, 1, 1)
     end
