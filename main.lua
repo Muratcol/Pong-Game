@@ -42,7 +42,7 @@ function love.load()
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
         fullscreen = false,
         vsync = true,
-        resizable = false
+        resizable = true
     }) 
 end
 
@@ -206,3 +206,8 @@ function love.draw()
         love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 40, 20)
         love.graphics.setColor(1, 1, 1, 1)
     end
+
+    function love.resize(w, h)
+        push:resize(w, h)
+    end
+    
