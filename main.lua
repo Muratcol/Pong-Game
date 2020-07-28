@@ -7,10 +7,12 @@ WINDOW_HEIGHT = 720
 VIRTUAL_WIDTH = 432
 VIRTUAL_HEIGHT = 243
 
+PADDLE_SPEED = 200
+
 function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
     smallFont = love.graphics.newFont('Daydream.ttf', 8)
-    scoreFont = love.graphics.newFont('Daydream.ttf', 32)
+    scoreFont = love.graphics.newFont('Daydream.ttf', 25)
     player1Score = 0
     player2Score = 0
     player1Y = 30
@@ -24,12 +26,17 @@ end
 
 function love.update(dt)
     if love.keyboard.isDown('w') then
+        -- move paddles only verticaly
+        player1Y = math.max(1, player1Y - PADDLE_SPEED * dt)
 
     elseif love.keyboard.isDown('s') then
-
+        player1Y = math.min(VIRTUAL_HEIGHT - 21, player1Y + PADDLE_SPEED * dt)
     end
-
-    if love.keyboard.isDown()
+    if love.keyboard.isDown('up') then
+        player2Y = math.max(1, player2Y - PADDLE_SPEED * dt)
+    elseif love.keyboard.isDown('down') then
+        player2Y = math.min(VIRTUAL_HEIGHT - 21, player2Y + PADDLE_SPEED * dt)
+    end
 end
 
 
