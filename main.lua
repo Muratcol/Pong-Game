@@ -49,6 +49,7 @@ end
 function love.update(dt)
     if gameState == 'play' then
         ball:update(dt)
+        
         -- Collide effect
         if ball:collides(paddle1) then
             -- deflect ball to the right
@@ -91,14 +92,26 @@ function love.update(dt)
     else
         paddle1.dy = 0
     end
-    if love.keyboard.isDown('up') then
-        paddle2.dy = - PADDLE_SPEED
-    elseif love.keyboard.isDown('down') then
-        paddle2.dy = PADDLE_SPEED
-    else
-        paddle2.dy = 0
-    end   
 
+    ai()
+    -- if love.keyboard.isDown('up') then
+    --     paddle2.dy = - PADDLE_SPEED
+    -- elseif love.keyboard.isDown('down') then
+    --     paddle2.dy = PADDLE_SPEED
+    -- else
+    --     paddle2.dy = 0
+    -- end   
+
+end
+
+function ai()
+    if paddle2.y - ball.y < 2 and paddle2.y - ball.y > -2 then
+        paddle2.dy = 0;
+    elseif paddle2.y > ball.y or paddle2.y > ball.y then
+        paddle2.dy = - PADDLE_SPEED
+    elseif paddle2.y < ball.y or paddle2.y > ball.y then
+        paddle2.dy = PADDLE_SPEED    
+    end 
 end
 
 function score()
@@ -106,13 +119,13 @@ function score()
         player2Score = player2Score + 1
         ball:reset()
         servingPlayer = 1
-        ball.dx = 100       
+        ball.dx = -ball.dx      
     end
     if ball.x >= VIRTUAL_WIDTH -4 then
         player1Score = player1Score + 1
         ball:reset()    
         servingPlayer = 2
-        ball.dx = -100  
+        ball.dx = -ball.dx
     end
     if player1Score == 4 then
         victoryPlayer = 1
