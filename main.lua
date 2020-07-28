@@ -22,7 +22,13 @@ function love.load()
     math.randomseed((os.time()))
     smallFont = love.graphics.newFont('Daydream.ttf', 8)
     scoreFont = love.graphics.newFont('Daydream.ttf', 25)
-
+    -- Audio Object
+    sounds = {
+        ['paddleHitSound'] = love.audio.newSource('collisionSound.wav', 'static'),
+        ['scoreSound'] = love.audio.newSource('scoreSound.wav', 'static'),
+        ['wallHitSound'] = love.audio.newSource('wallCollideSound.wav', 'static')
+    }  
+    -- Variables
     player1Score = 0
     player2Score = 0
     servingPlayer = math.random(2) == 1 and 2
@@ -47,25 +53,30 @@ function love.update(dt)
         if ball:collides(paddle1) then
             -- deflect ball to the right
             ball.dx = -ball.dx
+            sounds['paddleHitSound']:play()
         end
 
         if ball:collides(paddle2) then
             -- deflect ball to the left
             ball.dx = -ball.dx
+            sounds['paddleHitSound']:play()
         end
 
         if ball.y <= 0 then
             ball.dy = -ball.dy
             ball.y = 0
+            sounds['wallHitSound']:play()
         end
 
         if ball.y >= VIRTUAL_HEIGHT - 4 then
             ball.dy = -ball.dy
             ball.y = VIRTUAL_HEIGHT - 4
+            sounds['wallHitSound']:play()
         end
 
         if ball.x <= 0 or ball.x >= VIRTUAL_WIDTH - 4 then
             score()
+            sounds['scoreSound']:play()
         end  
     end
 
@@ -167,7 +178,7 @@ function love.draw()
             love.graphics.printf('Serving player: ' .. tostring(servingPlayer == 1 and 'Player 2' or 'Player 1'), 0, 20, VIRTUAL_WIDTH, 'center')
             love.graphics.printf('Press Enter to serve', 0, 40, VIRTUAL_WIDTH + 20, 'center')
         elseif gameState == 'victory' then
-            love.graphics.printf('Player ' .. tostring(victoryPlayer)  .. 'Wins!', 0, 20, VIRTUAL_WIDTH, 'center')
+            love.graphics.printf('Player ' .. tostring(victoryPlayer)  .. ' Wins!', 0, 20, VIRTUAL_WIDTH, 'center')
             love.graphics.printf('Press R to restart', 0, 40, VIRTUAL_WIDTH + 20, 'center')
         else
             love.graphics.printf('', 0, 20, VIRTUAL_WIDTH, 'center')
